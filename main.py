@@ -20,7 +20,7 @@ def guitar_to_ukulele(guitar_tabs: list, song_name: str):
     # Poop the ukulele tabs scheme to a .txt file
     tabs_scheme_to_txt_file(song_name, song_tabs_scheme)
 
-    return "FML I'M OUT"
+    print("FML I'M OUT")
 
 if __name__ == "__main__":
     guitar_to_ukulele(the_bad_touch_tabs, "The_Bad_Touch")
