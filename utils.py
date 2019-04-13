@@ -1,6 +1,7 @@
 from config import *
 from os import path
 
+
 def note_to_num(full_note: tuple):
     """ (note, pitch) => num """
     note = full_note[0]
@@ -94,7 +95,7 @@ def tabs_scheme_to_txt_file(song_name, song_tabs_scheme):
     with open(path.join(txt_file_loc, song_name + ".txt"), 'w') as song_tabs_file:
         for i in range(num_of_strings):
             # we need to reverse the order of the strings for the printout lol
-            curr_string = [str(note_scheme[-(i+1)]) for note_scheme in song_tabs_scheme]
+            curr_string = [str(note_scheme[-(i + 1)]) for note_scheme in song_tabs_scheme]
             curr_string_txt = ""
             for j in curr_string:
                 if len(str(j)) == 1:
@@ -103,15 +104,3 @@ def tabs_scheme_to_txt_file(song_name, song_tabs_scheme):
                     curr_string_txt += " " + str(j)
             curr_string_txt += '\n'
             song_tabs_file.writelines(curr_string_txt)
-
-
-
-
-guitar_strings = get_strings_from_base_notes(guitar_base_notes, guitar_frets_num)
-ukulele_strings = get_strings_from_base_notes(ukulele_base_notes, ukulele_frets_num)
-song_note_nums = song_to_nums(the_bad_touch_tabs, guitar_strings)
-song_tabs_uku = nums_to_song_tabs(song_note_nums, ukulele_strings)
-
-song_tabs_scheme = song_tabs_to_scheme(song_tabs_uku, 4)
-
-tabs_scheme_to_txt_file("thebadtouch", song_tabs_scheme)
