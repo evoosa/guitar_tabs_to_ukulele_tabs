@@ -1,5 +1,5 @@
 from config import *
-
+from os import path
 
 def note_to_num(full_note: tuple):
     """ (note, pitch) => num """
@@ -41,7 +41,7 @@ def song_to_nums(song: list, strings: list):
     return [string_loc_to_num(strings, string_loc) for string_loc in song]
 
 
-def nums_to_song(song_notes_nums: list, strings: list):
+def nums_to_song_tabs(song_notes_nums: list, strings: list):
     """ Convert note_nums to a song - strum locations on the instrument """
 
     song_tabs = []
@@ -51,9 +51,7 @@ def nums_to_song(song_notes_nums: list, strings: list):
 
     # get the lowest note in the ukulele
     instrument_lowest_notes = [string[0] for string in strings]
-    print(instrument_lowest_notes)
     instrument_lowest_note_num = list(set(instrument_lowest_notes))[0]
-    print(instrument_lowest_note_num)
 
     # if the lowest note in the guitar is lower than the one in the ukulele:
     if song_lowest_note_num < instrument_lowest_note_num:
@@ -76,7 +74,43 @@ def nums_to_song(song_notes_nums: list, strings: list):
 
     return song_tabs
 
+
+def song_tabs_to_scheme(song_tabs: list, num_of_strings: int):
+    """ Convert note locations on the strings, to a tab scheme """
+    song_tabs_scheme = []
+    base_note_scheme = ['-' for i in range(num_of_strings)]
+    # for every note
+    for note_loc in song_tabs:
+        note_scheme = list(base_note_scheme)
+        note_scheme[note_loc[0] - 1] = note_loc[1]
+        song_tabs_scheme.append(note_scheme)
+    return song_tabs_scheme
+
+
+def tabs_scheme_to_txt_file(song_name, song_tabs_scheme):
+    """ Output tabs scheme to a .txt file """
+    num_of_strings = len(song_tabs_scheme[0])
+
+    with open(path.join(txt_file_loc, song_name + ".txt"), 'w') as song_tabs_file:
+        for i in range(num_of_strings):
+            curr_string = [str(note_scheme[i]) for note_scheme in song_tabs_scheme]
+            curr_string_txt = ""
+            for j in curr_string:
+                if len(str(j)) == 1:
+                    curr_string_txt += "  " + str(j)
+                else:
+                    curr_string_txt += " " + str(j)
+            curr_string_txt += '\n'
+            song_tabs_file.writelines(curr_string_txt)
+
+
+
+
 guitar_strings = get_strings_from_base_notes(guitar_base_notes, guitar_frets_num)
 ukulele_strings = get_strings_from_base_notes(ukulele_base_notes, ukulele_frets_num)
 song_note_nums = song_to_nums(the_bad_touch_tabs, guitar_strings)
-print(nums_to_song(song_note_nums, ukulele_strings))
+song_tabs_uku = nums_to_song_tabs(song_note_nums, ukulele_strings)
+
+song_tabs_scheme = song_tabs_to_scheme(song_tabs_uku, 4)
+
+tabs_scheme_to_txt_file("badtouch", song_tabs_scheme)
